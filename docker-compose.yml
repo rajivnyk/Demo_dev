@@ -1,0 +1,23 @@
+services:
+  mysql-container2:
+    image: mysql:8.0
+    container_name: mysql-container3
+    env_file:
+      - .env
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  flask_app:
+    build: .
+    container_name: flask_cnt4
+    env_file:
+      - .env
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql-container2
+
+volumes:
+  mysql_data:
