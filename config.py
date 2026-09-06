@@ -8,8 +8,11 @@ class Config:
     DB_HOST = os.getenv("DB_HOST", "mysql-container2")
     DB_NAME = os.getenv("DB_NAME", "flask_demo2")
 
-    SQLALCHEMY_DATABASE_URI = (
-        f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:3306/{DB_NAME}"
-    )
+    if os.getenv("TESTING") == "True":
+        SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    else:
+        SQLALCHEMY_DATABASE_URI = (
+            f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:3306/{DB_NAME}"
+        )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
