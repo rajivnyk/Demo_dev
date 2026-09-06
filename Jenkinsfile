@@ -1,39 +1,39 @@
 pipeline {
+
     agent any
-    
+
     stages {
+
         stage('Checkout') {
-            steps { 
+            steps {
                 checkout scm
             }
         }
-        
-       stage('Install Dependencies'){
-    steps{
-        sh '''
-            python3 -m venv venv
-            ./venv/bin/pip install -r requirements.txt
-        '''
-    }
-    }
-        
-        stage('Test') {
+
+        stage('Install Dependencies') {
             steps {
-                sh 'pytest'
+                sh '''
+                    python3 -m venv venv
+                    ./venv/bin/pip install --upgrade pip
+                    ./venv/bin/pip install -r requirements.txt
+                '''
             }
         }
-        
+
+        stage('Test') {
+            steps {
+                sh './venv/bin/pytest'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                // I added the missing '.' at the end of the build command
-                // I changed the name to 'demo-flask-app' so it doesn't conflict with your old one!
                 sh 'docker build -t rajiv69/demo-flask-app:latest .'
             }
         }
-        
+
         stage('Push to Docker Hub') {
             steps {
-                // Fixed the syntax for usernamePassword and credentialsId
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'dockerhub-cred',
@@ -41,7 +41,6 @@ pipeline {
                         passwordVariable: 'DOCKER_PASS'
                     )
                 ]) {
-                    // Fixed the echo quotation marks syntax
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                         docker push rajiv69/demo-flask-app:latest
