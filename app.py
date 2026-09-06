@@ -25,7 +25,7 @@ with app.app_context():
 @app.route("/")
 def home():
     return jsonify({
-        "message": "Flask + MySQL + SQLAlchemy is working!"
+        "message": "Flask + MySQL + SQLAlchemy is working good!"
     })
 
 
